@@ -1,4 +1,4 @@
-import 'package:dixapp/ui/widgets/Button.dart';
+
 import 'package:flutter/material.dart';
 
 class SlideWidget extends StatefulWidget {
@@ -6,9 +6,7 @@ class SlideWidget extends StatefulWidget {
   final String image;
   final String title;
   final String description;
-  final Function onNext;
-
-  const SlideWidget({this.image, this.title, this.description, this.onNext});
+  const SlideWidget({this.image, this.title, this.description});
 
   @override
   _SlideWidgetState createState() => _SlideWidgetState();
@@ -42,17 +40,6 @@ class _SlideWidgetState extends State<SlideWidget> {
         ),
         SizedBox(height: 20.0,),
 
-        new Button(
-          width: MediaQuery.of(context).size.width,
-          title: "SUIVANT",
-          color: Theme.of(context).accentColor,
-          titleColor: Colors.white,
-          titleSize: 20,
-          margin: EdgeInsets.only(left: 25.0, right: 25.0),
-          onTap: (){
-            widget.onNext();
-          },
-        )
       ],
     );
   }
