@@ -63,21 +63,21 @@ class CountryPicker extends StatelessWidget {
     return InkWell(
 
       child: new Container(
-        width: 138.0,
+        width: 90.0,
         height: 60.0,
         padding: EdgeInsets.only(left:8.0, right: 8.0),
         decoration: BoxDecoration(
-            color: Colors.green[50],
+            color:  Color(0xff2581C5).withOpacity(0.1),
             shape: BoxShape.rectangle,
-            border: Border.all(width: 1.0, color: Colors.green[50]),
-            borderRadius: BorderRadius.circular(10.0)),
+           // border: Border.all(width: 1.0, color:  Color(0xff2581C5).withOpacity(0.2),),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0), bottomLeft: Radius.circular(8.0))),
         child: new Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
 
            new Container(
-             width: 120.0,
+
              height: 60.0,
              child: new Row(
                children: <Widget>[
@@ -87,11 +87,10 @@ class CountryPicker extends StatelessWidget {
                    fit: BoxFit.fitWidth,
                  ),
                  Container(
-                     margin: const EdgeInsets.only(top:8.0,bottom: 8.0),
-                     width: 53.0,
+
                      child: Text(" +${displayCountry.dialingCode}", style: TextStyle(fontSize: 18.0 , color: Colors.black,fontFamily: 'Montserrat'),)
                  ),
-                 Icon(Icons.arrow_drop_down,color: Colors.black,size: 36.0,)
+                 //Icon(Icons.arrow_drop_down,color: Colors.black,size: 36.0,)
                ],
              ),
            ),

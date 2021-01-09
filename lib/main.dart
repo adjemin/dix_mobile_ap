@@ -1,3 +1,4 @@
+import 'package:dixapp/ui/auth/RegisterScreen.dart';
 import 'package:dixapp/ui/splash/Splashscreen.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen()
+      home: RegisterScreen()
     );
   }
 }

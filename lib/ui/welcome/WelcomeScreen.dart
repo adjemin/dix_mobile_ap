@@ -1,3 +1,4 @@
+import 'package:dixapp/ui/auth/RegisterScreen.dart';
 import 'package:dixapp/ui/welcome/slide/SlideWidget.dart';
 import 'package:dixapp/ui/widgets/Button.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     if(_index == 1){
 
-      print("Move");
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> new RegisterScreen()));
 
     }else{
       _index ++;
