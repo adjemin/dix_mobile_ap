@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:dixapp/models/ContactResult.dart';
+import 'package:dixapp/models/Session.dart';
+import 'package:dixapp/ui/main/MainScreen.dart';
 import 'package:dixapp/ui/welcome/WelcomeScreen.dart';
 import 'package:dixapp/ui/widgets/Button.dart';
+import 'package:dixapp/util/LoginManager.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,8 +20,36 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    Timer.run(() {
+
+      LoginManager.connectedUser()
+          .then((Session value)async{
+
+        if(value != null){
+
+
+          LoginManager.findContacts()
+              .then((contactResult){
+            if(contactResult != null){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainScreen(value,contactResult)));
+            }
+
+          });
+
+
+        }
+      }).catchError((onError){
+
+      });
+
+    });
     super.initState();
+
+
+
+
   }
+
 
   @override
   void didChangeDependencies() {

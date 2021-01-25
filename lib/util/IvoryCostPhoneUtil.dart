@@ -1,4 +1,6 @@
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:dixapp/util/properties/phone.dart';
+
+import 'dixcontact.dart';
 
 class IvoryCostPhoneUtil{
 
@@ -235,14 +237,14 @@ class IvoryCostPhoneUtil{
    if(number.length == 8){
      String prefixMobile = number.substring(0, number.length - 6);
      String prefixFix = number.substring(0, number.length - 5);
-     print("PREFIX_MOBILE $prefixMobile");
-     print("PREFIX_FIX $prefixFix");
+     //print("PREFIX_MOBILE $prefixMobile");
+     //print("PREFIX_FIX $prefixFix");
      return mobilePrefixesCI.contains(prefixMobile) || fixedLineOperatorsPrefixesCI.contains(prefixFix);
    }
 
    if(number.length == 10){
      String prefix = number.substring(0, number.length - 8);
-     print("PREFIX_MOBILE $prefix");
+     //print("PREFIX_MOBILE $prefix");
      return ["01","05", "07", "21", "25", "27"].contains(prefix);
    }
 
@@ -258,12 +260,12 @@ class IvoryCostPhoneUtil{
 
 
       if(mobilePrefixesCI.contains(prefixMobile)){
-        print("PREFIX_MOBILE $prefixMobile");
+        //print("PREFIX_MOBILE $prefixMobile");
         return prefixMobile;
       }
 
       if(fixedLineOperatorsPrefixesCI.contains(prefixFix)){
-        print("PREFIX_FIX $prefixFix");
+        //print("PREFIX_FIX $prefixFix");
         return prefixFix;
       }
       return null;
@@ -272,7 +274,7 @@ class IvoryCostPhoneUtil{
     if(number.length == 10){
       String prefix = number.substring(0, number.length - 8);
       String prefixFix = number.substring(0, number.length - 8);
-      print("PREFIX_PNN $prefix");
+      //print("PREFIX_PNN $prefix");
 
       if(["01","05", "07"].contains(prefix)){
         return prefix;
@@ -292,7 +294,7 @@ class IvoryCostPhoneUtil{
   static bool isMobile(String number){
     if(number.length == 8){
       String prefixMobile = number.substring(0, number.length - 6);
-      print("PREFIX_MOBILE $prefixMobile");
+      //print("PREFIX_MOBILE $prefixMobile");
       return mobilePrefixesCI.contains(prefixMobile);
     }
 
@@ -327,19 +329,13 @@ class IvoryCostPhoneUtil{
 
   }
 
-  static Future convertPhone(Contact contact) async {
+  static Future<DixContact> convertPhone(DixContact contact) async {
 
-    //print("Contact >>>> ${contact.toJson()}");
-
-    //final String isoCode  = COUNTRY_ISO;
     final List<Phone> phones = contact.phones == null ? [] : contact.phones.toList();
     final List<Phone> newPhones = [];
 
 
     for(Phone phone in phones){
-
-      print("Phone >>> $phone");
-      print("Phone.normalizedNumber >>> ${IvoryCostPhoneUtil.normalizePhoneNumber(phone.number)}");
 
       bool isValid = isValidPhone(phone);
 
@@ -353,7 +349,6 @@ class IvoryCostPhoneUtil{
         newPhones.add(phone);
         continue;
       }
-
 
       // When it is valid phone
       String simpleNumber = IvoryCostPhoneUtil.simpleNumber(phone.number);
@@ -381,13 +376,18 @@ class IvoryCostPhoneUtil{
           operatorPrefix = IvoryCostPhoneUtil.fixedLineOperators[operator];
         }
 
-        print(" $operatorPrefix");
+
         if(operatorPrefix != null){
           String newPhoneNumber = "+225 "+operatorPrefix+" "+phoneNumber;
-          newPhoneNumber  = await IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
+          newPhoneNumber  = IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
+
+         /* Phone newPhone = new Phone(newPhoneNumber,
+              normalizedNumber: newPhoneNumber,
+              customLabel: "PNN"
+          );*/
 
           Phone newPhone = new Phone(newPhoneNumber,
-              normalizedNumber: newPhoneNumber,
+              normalizedNumber: "",
               customLabel: "PNN"
           );
 
@@ -406,10 +406,130 @@ class IvoryCostPhoneUtil{
 
     contact.phones = newPhones;
 
-    await FlutterContacts.updateContact(contact);
 
-    print("Converted");
+    //print("Converted");
 
+    return contact;
+
+
+  }
+  static Future<DixContact> unConvertPhone(DixContact contact) async {
+
+    final List<Phone> phones = contact.phones == null ? [] : contact.phones.toList();
+    final List<Phone> newPhones = [];
+
+
+    for(Phone phone in phones){
+
+      bool isValid = isValidPhone(phone);
+
+      if(!isValid){
+
+        newPhones.add(phone);
+        continue;
+      }
+
+      if(!IvoryCostPhoneUtil.isConverted(phone)){
+        newPhones.add(phone);
+        continue;
+      }
+
+      // When it is valid phone
+      String simpleNumber = IvoryCostPhoneUtil.simpleNumber(phone.number);
+      // RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(phoneNumber: phone.normalizedNumber, isoCode: COUNTRY_ISO);
+
+      String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(simpleNumber);
+
+     // bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
+     // bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
+
+      operator = operator.toLowerCase();
+
+      if(IvoryCostPhoneUtil.operators.contains(operator)){
+        String phoneNumber = simpleNumber.substring(3,simpleNumber.length);
+
+
+        //print("Revenir à 8 >>> $phoneNumber");
+
+        if(phoneNumber.length == 8){
+
+          String newPhoneNumber = "+225 "+phoneNumber;
+          newPhoneNumber  =  IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
+
+          Phone newPhone = new Phone(newPhoneNumber,
+              normalizedNumber: newPhoneNumber,
+              customLabel: ""
+          );
+
+          List<Phone> result = newPhones.where((element) => IvoryCostPhoneUtil.normalizePhoneNumber(element.number) == newPhone.number).toList();
+
+          if(result.isEmpty){
+            newPhones.add(phone);
+          }
+
+        }
+
+
+
+      }
+
+    }
+
+    contact.phones = newPhones;
+
+   // print("Converted");
+
+    return contact;
+
+
+  }
+
+
+
+  static String getPhoneNumberConversion(String phoneNumber){
+
+      bool isValid = isValidNumber(phoneNumber);
+
+      if(!isValid){
+        return "";
+      }
+
+      // When it is valid phone
+      String simpleNumber = IvoryCostPhoneUtil.simpleNumber(phoneNumber);
+      // RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(phoneNumber: phone.normalizedNumber, isoCode: COUNTRY_ISO);
+
+      String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(simpleNumber);
+
+      bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
+      bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
+
+      operator = operator.toLowerCase();
+
+      if(IvoryCostPhoneUtil.operators.contains(operator)){
+        String phoneNumber = simpleNumber;
+
+        String operatorPrefix = "";
+
+        if(isMobile){
+
+          operatorPrefix = IvoryCostPhoneUtil.mobileOperators[operator];
+
+        }
+
+        if(isFixedLine){
+          operatorPrefix = IvoryCostPhoneUtil.fixedLineOperators[operator];
+        }
+
+        if(operatorPrefix != null){
+          String newPhoneNumber = "+225 "+operatorPrefix+" "+phoneNumber;
+          newPhoneNumber  = IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
+
+          return newPhoneNumber;
+
+        }
+      }
+
+      return "";
 
   }
 

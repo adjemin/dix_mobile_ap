@@ -1,0 +1,78 @@
+{
+  "project_info": {
+    "project_number": "895606272489",
+    "project_id": "huitadix-7fa15",
+    "storage_bucket": "huitadix-7fa15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895606272489:android:f42855dbcf177e51dc9b78",
+        "android_client_info": {
+          "package_name": "com.adjemin.dix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895606272489-49lqectd6ie0td8nu54f53n2ai1nlsig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adjemin.dix",
+            "certificate_hash": "d60ff26aa7de2442c03a242cc554e30f28617a97"
+          }
+        },
+        {
+          "client_id": "895606272489-6qrgsuq00qc99k3reg8e3ftaqf2ev7cc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adjemin.dix",
+            "certificate_hash": "55acfd5a914395ab89935eb3597c209773ee3d61"
+          }
+        },
+        {
+          "client_id": "895606272489-k1p3hc7jl5irps7ma21m40764pvl4bso.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adjemin.dix",
+            "certificate_hash": "394e154ec8aab5b96718d2f0ccd4ca4643e450ff"
+          }
+        },
+        {
+          "client_id": "895606272489-pk00k4jhq5tvjd8pju4kkmgug4oqdl9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adjemin.dix",
+            "certificate_hash": "3be34d9cdd938d4b43e15f6b3a65f21f6cf0db32"
+          }
+        },
+        {
+          "client_id": "895606272489-gtlir006296laaonnk0q2e6a5l2n149c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADFCON0l0netsoEkOeX6aFqE3cnuv3cT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895606272489-gtlir006296laaonnk0q2e6a5l2n149c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "895606272489-6c84roiu38lu0scl8t8iqun7ddsp20ds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.adjemin.adjeminNumberConvert"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

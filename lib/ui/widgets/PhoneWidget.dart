@@ -1,6 +1,7 @@
 import 'package:dixapp/util/IvoryCostPhoneUtil.dart';
+import 'package:dixapp/util/properties/phone.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+
 
 class PhoneWidget extends StatefulWidget {
 

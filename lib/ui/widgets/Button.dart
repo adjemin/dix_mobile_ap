@@ -12,9 +12,10 @@ class Button extends StatelessWidget {
   final EdgeInsets padding;
   final EdgeInsets margin;
   final Function onTap;
+  final Color borderColor;
 
   Button({this.color, this.title, this.titleStyle, this.titleColor, this.titleSize,
-    this.width, this.height, this.padding, this.margin,this.onTap});
+    this.width, this.height, this.padding, this.margin,this.onTap, this.borderColor});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +25,7 @@ class Button extends StatelessWidget {
       child: new RaisedButton(
         onPressed: onTap,
         color: color,
-        shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+        shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0), side: BorderSide(color: borderColor??Color(0x00000000))),
         child: new Padding(
           padding: padding == null? EdgeInsets.all(16.0): padding,
 

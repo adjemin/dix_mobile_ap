@@ -1,13 +1,14 @@
 import 'package:dixapp/ui/widgets/PhoneWidget.dart';
+import 'package:dixapp/util/dixcontact.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 
 class ContactWidget extends StatefulWidget {
 
-  final Contact contact;
+  final DixContact contact;
   final Function call;
+  final bool isSelected;
 
-  const ContactWidget({this.contact, this.call});
+  const ContactWidget({this.contact, this.call, this.isSelected});
 
   @override
   _ContactWidgetState createState() => _ContactWidgetState();
@@ -25,6 +26,16 @@ class _ContactWidgetState extends State<ContactWidget> {
       child: new Row(
         children: [
 
+          new Container(
+            width: 50,
+            height: 50.0,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle
+            ),
+            child: Icon(Icons.person),
+          ),
+          new SizedBox(width: 10,),
           new Expanded(
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,23 +47,15 @@ class _ContactWidgetState extends State<ContactWidget> {
               ],
             ),
           ),
-          new Container(
-            child:GestureDetector(
-              onTap: (){
+        /*  new Container(
+            child: new Checkbox(
+                value: widget.isSelected,
+                onChanged: (value){
 
-                widget.call();
+                  widget.call(value);
 
-              },
-              child:  new Container(
-                child: Text("CONVERTIR", style: TextStyle(color: Colors.white),),
-                padding: EdgeInsets.only(left: 10.0, right: 10, top: 10.0, bottom: 10.0),
-                decoration: BoxDecoration(
-                    color: Colors.cyan,
-                    borderRadius: BorderRadius.circular(30.0)
-                ),
-              ),
-            ) ,
-          )
+                }),
+          )*/
         ],
       ),
     );
@@ -60,7 +63,7 @@ class _ContactWidgetState extends State<ContactWidget> {
 
 
 
-  String getNameText(Contact contact) {
+  String getNameText(DixContact contact) {
 
     if(contact.displayName == null){
       if(contact.normalizedName == null){

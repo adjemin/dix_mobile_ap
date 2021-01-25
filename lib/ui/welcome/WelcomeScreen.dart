@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:dixapp/models/Session.dart';
 import 'package:dixapp/ui/auth/RegisterScreen.dart';
+import 'package:dixapp/ui/main/MainScreen.dart';
 import 'package:dixapp/ui/welcome/slide/SlideWidget.dart';
 import 'package:dixapp/ui/widgets/Button.dart';
+import 'package:dixapp/util/LoginManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 
@@ -29,16 +34,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
     super.initState();
 
-/*    Timer.run(() {
-      LoginManager.connectedUser().then((s) {
-        if (s != null) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => new MainScreen(session: s,)));
-        } else {}
+    Timer.run(() {
+
+      LoginManager.connectedUser()
+          .then((Session value)async{
+
+        if(value != null){
+
+          print('Connected $value');
+
+          LoginManager.findContacts()
+              .then((contactResult){
+            print('Connected >>> contactResult $contactResult');
+
+            if(contactResult != null){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainScreen(value,contactResult)));
+            }
+
+          });
+
+
+        }
       }).catchError((onError){
 
       });
-    });*/
+
+    });
+
   }
 
 
@@ -49,12 +71,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       new SlideWidget(
         image: 'images/slide_1.png',
         title: "Passez de 8 à 10 chiffres tous vos numéros de téléphones Ivoiriens ",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dui purus, ultricies eu lectus vel, tempus tempor purus. ",
+        description: "Le nouveau Plan National de Numérotation (PNN) prévoit qu’on ajoute simplement le ‘’07’’, préfixe devant les anciens numéros d’Orange ; le ‘’05’’, devant ceux de MTN ; et le ‘’01’’, devant les anciens numéros de Moov. « Pour les numéros fixes, il faudra ajouter le ‘’27’’ devant les anciens numéros d’Orange ; le‘’25’’ devant les anciens numéros de MTN ; le ‘’21’’ devant les anciens numéros de Moov",
       ),
       new SlideWidget(
         image: 'images/slide_2.png',
         title: "Partagez votre expérience avec vos proches ",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dui purus, ultricies eu lectus vel, tempus tempor purus. ",
+        description: "Faites découvrir l'application à vos proches en partageant un lien sur les réseaux sociaux.",
 
       )
     ];
@@ -95,7 +117,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               color: Theme.of(context).accentColor,
               titleColor: Colors.white,
               titleSize: 20,
-              margin: EdgeInsets.only(left: 25.0, right: 25.0),
+              margin: EdgeInsets.only(left: 25.0, right: 25.0, top: 10),
               onTap: (){
                onNext();
               },

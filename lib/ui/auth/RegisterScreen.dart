@@ -1,7 +1,11 @@
+import 'package:dixapp/ui/auth/VerifyOtpScreen.dart';
 import 'package:dixapp/ui/widgets/Button.dart';
+import 'package:dixapp/util/Constants.dart';
 import 'package:dixapp/util/country_picker/flutter_country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_checkbox/flare_checkbox.dart';
+import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -12,7 +16,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Country _currentCountry;
 
+  final TextEditingController nameController = new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
   final TextEditingController phoneNumberController = new TextEditingController();
+
+  bool  _isTermsAccepted = true;
 
   @override
   void initState() {
@@ -41,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dui purus,", textAlign: TextAlign.center,
+              child: Text("Entrez vos informations personnelles", textAlign: TextAlign.center,
                 style: TextStyle(color: Color(0xff003F7C), fontSize: 16.0),
               ),
             ),
@@ -60,10 +68,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 )
               ),
               child: TextField(
+                controller: nameController,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Nom & Prénoms',
                   hintStyle: TextStyle(color: Color(0xff707070), fontSize: 18.0)
+                ),
+              ),
+            ),
+            SizedBox(height: 10.0,),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 25),
+              padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 6.0, bottom: 6.0),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                      color:  Color(0xff2581C5).withOpacity(0.2),
+                      width: 1.8
+                  )
+              ),
+              child: TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Email',
+                    hintStyle: TextStyle(color: Color(0xff707070), fontSize: 18.0)
                 ),
               ),
             ),
@@ -93,6 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(width: 10.0,),
                   Expanded(
                     child: TextField(
+                      controller: phoneNumberController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: '00 00 00 00',
@@ -112,17 +146,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: FlareCheckbox(
                     onChanged: (value){
 
+
+                     setState(() {
+                       _isTermsAccepted = value;
+                     });
                       print("OK $value");
 
                     },
                     animation: 'assets/checkbox.flr',
-                    value: true,
+                    value: _isTermsAccepted,
                   ),
                 ),
                 new Expanded(
                   child: new Column(
                     children: [
-                      new Text("Je reconnais avoir lu et compris la politique"),
+                      new Text("Je reconnais avoir lu et compris"),
                     ],
                   ),
                 )
@@ -130,8 +168,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text("Lorem ipsum dolor sit amet, consectetur adipiscing,", textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xff003F7C), fontSize: 14.0, decoration: TextDecoration.underline),
+              child: InkWell(
+                onTap: (){
+                  launchURL(Constants.TERMS);
+                },
+                child: Text("les conditions d'utilisation et la politique de confidentialité", textAlign: TextAlign.center,
+                  style: TextStyle(color: Color(0xff003F7C), fontSize: 14.0, decoration: TextDecoration.underline),
+                ),
               ),
             ),
             new SizedBox(height: 20,),
@@ -144,6 +187,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
               margin: EdgeInsets.only(left: 25.0, right: 25.0),
               onTap: (){
 
+                if(nameController.text.isEmpty){
+                  Toast.show("Nom et Prénoms sont obligatoires", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundColor: Colors.red,textColor: Colors.white);
+
+                  return;
+                }
+
+                if(phoneNumberController.text.isEmpty){
+                  Toast.show("Téléphone est obligatoire", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundColor: Colors.red,textColor: Colors.white);
+
+                  return;
+                }
+
+                if(!_isTermsAccepted){
+                  Toast.show("Vous devez accepter les CGU avant de poursuivre.", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM, backgroundColor: Colors.red,textColor: Colors.white);
+
+                  return;
+                }
+
+
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> new VerifyOtpScreen(
+                  nameController.text,
+                  emailController.text,
+                  _currentCountry.dialingCode,
+                  phoneNumberController.text,
+                  _currentCountry.isoCode
+                )));
 
 
               },
@@ -157,5 +226,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  static launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not open the map.';
+    }
   }
 }
