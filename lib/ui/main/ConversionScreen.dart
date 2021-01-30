@@ -164,7 +164,8 @@ class _ConversionScreenState extends State<ConversionScreen> {
 
     elements = data;
 
-    int moovCount = 0;
+    int totalCount = 0;
+   /* int moovCount = 0;
     int orangeCount = 0;
     int mtnCount = 0;
 
@@ -237,17 +238,26 @@ class _ConversionScreenState extends State<ConversionScreen> {
 
       });
 
-    }
+    }*/
+
+
+    totalCount = elements.length;
+
+    pushNotification(
+        message: "$totalCount contacts retrouvés...",
+        status: NotificationStatus.PENDING,
+        duration: 1
+    );
 
     ContactResult result = new ContactResult(
         contacts: elements,
         totalContactCount: elements.length ,
         totalNumberCount: totalCount,
-        moovContactCount: moovCount,
+        /*moovContactCount: moovCount,
         mtnContactCount: mtnCount,
         orangeContactCount: orangeCount,
         totalConvertedNumberCount: totalConvertedCount,
-        totalNoneConvertedNumberCount: totalNoneConvertedCount
+        totalNoneConvertedNumberCount: totalNoneConvertedCount*/
     );
 
     pushNotification(

@@ -181,7 +181,11 @@ class _MainScreenState extends State<MainScreen> {
 
             new SizedBox(height: 5,),
 
-            new Row(
+            new Container(
+                child: new Text("Version ${Constants.VERSION_NAME}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
+            ),
+
+        /*    new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
 
@@ -275,7 +279,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
                 ]
-            ),
+            ),*/
 
             new SizedBox(height: 10,),
             convertedSelected.isNotEmpty?new Container(
@@ -285,7 +289,7 @@ class _MainScreenState extends State<MainScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
               ),
-              child: Text("${convertedSelected.length} contacts basculés sélèctionné",   textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0,color: Colors.white, fontWeight: FontWeight.bold),),
+              child: Text("${convertedSelected.length} contacts basculés sélèctionnés",   textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0,color: Colors.white, fontWeight: FontWeight.bold),),
             ): new Container(),
 
             unConvertedSelected.isNotEmpty?new Container(

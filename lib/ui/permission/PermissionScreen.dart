@@ -84,7 +84,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 25),
-                child: Text("Nous avons besoins de vos autorisation pour accéder à vos contacts.", textAlign: TextAlign.center,
+                child: Text("Nous avons besoins de vos autorisations pour accéder à vos contacts.", textAlign: TextAlign.center,
                   style: TextStyle(color: Color(0xff003F7C), fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -314,7 +314,8 @@ class _PermissionScreenState extends State<PermissionScreen> {
     final data = list.toList();
 
     elements = data;
-
+    int totalCount = 0;
+/*
     int moovCount = 0;
     int orangeCount = 0;
     int mtnCount = 0;
@@ -388,17 +389,27 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
       });
 
-    }
+    }*/
+
+    totalCount = elements.length;
+    pushNotification(
+        message: "$totalCount contacts retrouvés...",
+        status: NotificationStatus.PENDING,
+        duration: 1
+    );
+    /*await Future.delayed(Duration(milliseconds: 150),(){
+
+    });*/
 
     ContactResult result = new ContactResult(
       contacts: elements,
         totalContactCount: elements.length ,
         totalNumberCount: totalCount,
-      moovContactCount: moovCount,
+     /* moovContactCount: moovCount,
       mtnContactCount: mtnCount,
       orangeContactCount: orangeCount,
       totalConvertedNumberCount: totalConvertedCount,
-      totalNoneConvertedNumberCount: totalNoneConvertedCount
+      totalNoneConvertedNumberCount: totalNoneConvertedCount*/
     );
 
     pushNotification(

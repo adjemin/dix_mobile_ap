@@ -28,6 +28,9 @@ class Constants{
   static const String TERMS = DOMAIN_URL + "/terms";
 
 
+  static const String VERSION_NAME = "1.6.8+20";
+
+
 
 
 
