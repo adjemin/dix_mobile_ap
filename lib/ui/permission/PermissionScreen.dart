@@ -14,6 +14,7 @@ import 'package:dixapp/util/properties/phone.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class PermissionScreen extends StatefulWidget {
 
@@ -33,13 +34,32 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
   int _totalContacts = 0;
 
+  ProgressDialog pr;
 
 
   @override
   void initState() {
     super.initState();
 
+    pr = new ProgressDialog(context);
+    pr.style(
+      message: "Chargement...",
+      progressWidget: Container(
+          padding: EdgeInsets.all(8.0), child: CircularProgressIndicator()),
+      messageTextStyle: TextStyle(
+          fontFamily: 'Montserrat',
+          color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.w600),
+    );
+
   }
+
+  void showProgress(){
+    pr.show();
+  }
+  void hideProgress(){
+    pr.hide();
+  }
+
 
   @override
   void didChangeDependencies() {
@@ -257,6 +277,8 @@ class _PermissionScreenState extends State<PermissionScreen> {
     }
 
 
+
+
     return results;
 
 
@@ -276,8 +298,11 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
     });
 
+    showProgress();
 
     final list = await fetchContacts();
+
+    hideProgress();
 
     pushNotification(
       message: "Initialisation réussi!",

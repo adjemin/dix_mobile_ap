@@ -93,6 +93,13 @@ class _MainScreenState extends State<MainScreen> {
        ];
      });
 
+    Future.delayed(Duration(seconds: 1),()async{
+
+      var result = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> new AdsScreen()));
+
+
+    });
+
     /// Listen to contacts database changes
    // FlutterContacts.onChange(()async{
 
@@ -119,12 +126,7 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
-    Future.delayed(Duration(seconds: 1),()async{
 
-     var result = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> new AdsScreen()));
-
-
-    });
 
   }
 

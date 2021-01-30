@@ -16,13 +16,13 @@ class IvoryCostPhoneUtil{
     "moov": "01"
   };
 
- static  final fixedLineOperators = {
+  static  final fixedLineOperators = {
     "orange" : "27",
     "mtn": "25",
     "moov": "21"
   };
 
-  static final mobilePrefixesCI = ["07", "08", "09", "47", "48", "49", "57", "59", "67", "68", "69", "77", "78", "87", "88", "89", "97", "98"
+  static final mobilePrefixesCI = ["07", "08", "09", "47", "48", "49", "57", "58", "59", "67", "68", "69", "77", "78", "79","87", "88", "89", "97", "98"
     ,"04", "05", "06", "44", '45', "46", "54", "55", "56", "64", "65", "66", "74", "75", "76", "84", "85", "86", "94", "95", "96",
     "01", "02", "03", "40", "41", "42", "43", "50", "51", "52", "53", "70", "71", "72", "73"];
 
@@ -31,7 +31,7 @@ class IvoryCostPhoneUtil{
     "208", "218", "228", "238"];
 
   static final mobileOperatorsPrefixes = {
-    "orange" : ["07", "08", "09", "47", "48", "49", "57", "59", "67", "68", "69", "77", "78", "87", "88", "89", "97", "98"],
+    "orange" : ["07", "08", "09", "47", "48", "49", "57", "58", "59", "67", "68", "69", "77", "78", "79","87", "88", "89", "97", "98"],
     "mtn": ["04", "05", "06", "44", '45', "46", "54", "55", "56", "64", "65", "66", "74", "75", "76", "84", "85", "86", "94", "95", "96"],
     "moov": ["01", "02", "03", "40", "41", "42", "43", "50", "51", "52", "53", "70", "71", "72", "73"]
   };
@@ -46,7 +46,7 @@ class IvoryCostPhoneUtil{
 
 
 
- static  bool isConverted(Phone phone) {
+  static  bool isConverted(Phone phone) {
 
     String phoneNumber  = phone.number;
 
@@ -70,75 +70,75 @@ class IvoryCostPhoneUtil{
 
     if(isIvorianNumber(phoneNumber)){
 
-        final String digitNumber = simpleNumber(phoneNumber);
+      final String digitNumber = simpleNumber(phoneNumber);
 
-        final String prefix = getOperatorPrefix(digitNumber);
+      final String prefix = getOperatorPrefix(digitNumber);
 
-        String operator = "";
+      String operator = "";
 
-        if(digitNumber.length == 8){
-          if(isMobile(digitNumber)){
+      if(digitNumber.length == 8){
+        if(isMobile(digitNumber)){
 
-            for(MapEntry<String, List<String>> item in mobileOperatorsPrefixes.entries.toList()){
+          for(MapEntry<String, List<String>> item in mobileOperatorsPrefixes.entries.toList()){
 
-              if(item.value.contains(prefix)){
-                operator = item.key;
-                break;
-              }
-
+            if(item.value.contains(prefix)){
+              operator = item.key;
+              break;
             }
 
-          }else{
-            for(MapEntry<String, List<String>> item in fixedLineOperatorsPrefixes.entries.toList()){
+          }
 
-              if(item.value.contains(prefix)){
-                operator = item.key;
-                break;
-              }
+        }else{
+          for(MapEntry<String, List<String>> item in fixedLineOperatorsPrefixes.entries.toList()){
 
+            if(item.value.contains(prefix)){
+              operator = item.key;
+              break;
             }
+
+          }
+        }
+
+
+      }
+
+      if(digitNumber.length == 10){
+        if(isMobile(digitNumber)){
+
+          for(MapEntry<String, List<String>> item in mobileOperatorsPrefixes.entries.toList()){
+
+            if(item.value.contains(prefix)){
+              operator = item.key;
+              break;
+            }
+
+          }
+
+        }else{
+
+          if(prefix  == "21"){
+            operator = "moov";
+          }
+
+          if(prefix == "25"){
+            operator ="mtn";
+          }
+
+          if(prefix == "27"){
+            operator = "orange";
           }
 
 
         }
 
-        if(digitNumber.length == 10){
-          if(isMobile(digitNumber)){
 
-            for(MapEntry<String, List<String>> item in mobileOperatorsPrefixes.entries.toList()){
+      }
 
-              if(item.value.contains(prefix)){
-                operator = item.key;
-                break;
-              }
+      return operator;
 
-            }
-
-          }else{
-
-            if(prefix  == "21"){
-              operator = "moov";
-            }
-
-            if(prefix == "25"){
-              operator ="mtn";
-            }
-
-            if(prefix == "27"){
-              operator = "orange";
-            }
-
-
-          }
-
-
-        }
-
-        return operator;
-
-      }else{
-       return "none";
-     }
+    }else{
+      return "none";
+    }
 
 
 
@@ -148,7 +148,7 @@ class IvoryCostPhoneUtil{
   }
 
   static String simpleNumber(String phoneNumber){
-
+    phoneNumber = phoneNumber.replaceAll(' ', '');
     phoneNumber = phoneNumber.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     String digitNumber = phoneNumber;
 
@@ -179,22 +179,24 @@ class IvoryCostPhoneUtil{
 
   static String normalizePhoneNumber(String number){
 
-   if(isIvorianNumber(number)){
-     String phoneNumber  = number;
-     phoneNumber = phoneNumber.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    if(isIvorianNumber(number)){
+      String phoneNumber  = number;
+      phoneNumber = phoneNumber.replaceAll(' ', '');
+      phoneNumber = phoneNumber.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
 
-     String digitNumber = simpleNumber(phoneNumber);
+      String digitNumber = simpleNumber(phoneNumber);
 
-     return "+225"+digitNumber;
-   }else{
+      return "+225"+digitNumber;
+    }else{
 
-     return number;
-   }
+      return number;
+    }
 
   }
   static bool isIvorianNumber(String number){
 
     String phoneNumber  = number;
+    phoneNumber = phoneNumber.replaceAll(' ', '');
     phoneNumber = phoneNumber.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
 
     String digitNumber = "";
@@ -234,21 +236,21 @@ class IvoryCostPhoneUtil{
 
   static bool hasOperatorsPrefixesCI(String number){
 
-   if(number.length == 8){
-     String prefixMobile = number.substring(0, number.length - 6);
-     String prefixFix = number.substring(0, number.length - 5);
-     //print("PREFIX_MOBILE $prefixMobile");
-     //print("PREFIX_FIX $prefixFix");
-     return mobilePrefixesCI.contains(prefixMobile) || fixedLineOperatorsPrefixesCI.contains(prefixFix);
-   }
+    if(number.length == 8){
+      String prefixMobile = number.substring(0, number.length - 6);
+      String prefixFix = number.substring(0, number.length - 5);
+      //print("PREFIX_MOBILE $prefixMobile");
+      //print("PREFIX_FIX $prefixFix");
+      return mobilePrefixesCI.contains(prefixMobile) || fixedLineOperatorsPrefixesCI.contains(prefixFix);
+    }
 
-   if(number.length == 10){
-     String prefix = number.substring(0, number.length - 8);
-     //print("PREFIX_MOBILE $prefix");
-     return ["01","05", "07", "21", "25", "27"].contains(prefix);
-   }
+    if(number.length == 10){
+      String prefix = number.substring(0, number.length - 8);
+      //print("PREFIX_MOBILE $prefix");
+      return ["01","05", "07", "21", "25", "27"].contains(prefix);
+    }
 
-   return false;
+    return false;
 
   }
 
@@ -325,7 +327,7 @@ class IvoryCostPhoneUtil{
 
   static bool isValidNumber(String phoneNumber){
 
-   return isIvorianNumber(phoneNumber);
+    return isIvorianNumber(phoneNumber);
 
   }
 
@@ -381,7 +383,7 @@ class IvoryCostPhoneUtil{
           String newPhoneNumber = "+225 "+operatorPrefix+" "+phoneNumber;
           newPhoneNumber  = IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
 
-         /* Phone newPhone = new Phone(newPhoneNumber,
+          /* Phone newPhone = new Phone(newPhoneNumber,
               normalizedNumber: newPhoneNumber,
               customLabel: "PNN"
           );*/
@@ -440,8 +442,8 @@ class IvoryCostPhoneUtil{
 
       String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(simpleNumber);
 
-     // bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
-     // bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
+      // bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
+      // bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
 
       operator = operator.toLowerCase();
 
@@ -477,7 +479,7 @@ class IvoryCostPhoneUtil{
 
     contact.phones = newPhones;
 
-   // print("Converted");
+    // print("Converted");
 
     return contact;
 
@@ -488,48 +490,48 @@ class IvoryCostPhoneUtil{
 
   static String getPhoneNumberConversion(String phoneNumber){
 
-      bool isValid = isValidNumber(phoneNumber);
+    bool isValid = isValidNumber(phoneNumber);
 
-      if(!isValid){
-        return "";
-      }
-
-      // When it is valid phone
-      String simpleNumber = IvoryCostPhoneUtil.simpleNumber(phoneNumber);
-      // RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(phoneNumber: phone.normalizedNumber, isoCode: COUNTRY_ISO);
-
-      String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(simpleNumber);
-
-      bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
-      bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
-
-      operator = operator.toLowerCase();
-
-      if(IvoryCostPhoneUtil.operators.contains(operator)){
-        String phoneNumber = simpleNumber;
-
-        String operatorPrefix = "";
-
-        if(isMobile){
-
-          operatorPrefix = IvoryCostPhoneUtil.mobileOperators[operator];
-
-        }
-
-        if(isFixedLine){
-          operatorPrefix = IvoryCostPhoneUtil.fixedLineOperators[operator];
-        }
-
-        if(operatorPrefix != null){
-          String newPhoneNumber = "+225 "+operatorPrefix+" "+phoneNumber;
-          newPhoneNumber  = IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
-
-          return newPhoneNumber;
-
-        }
-      }
-
+    if(!isValid){
       return "";
+    }
+
+    // When it is valid phone
+    String simpleNumber = IvoryCostPhoneUtil.simpleNumber(phoneNumber);
+    // RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(phoneNumber: phone.normalizedNumber, isoCode: COUNTRY_ISO);
+
+    String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(simpleNumber);
+
+    bool isMobile = IvoryCostPhoneUtil.isMobile(simpleNumber);
+    bool isFixedLine = IvoryCostPhoneUtil.isFixedLine(simpleNumber);
+
+    operator = operator.toLowerCase();
+
+    if(IvoryCostPhoneUtil.operators.contains(operator)){
+      String phoneNumber = simpleNumber;
+
+      String operatorPrefix = "";
+
+      if(isMobile){
+
+        operatorPrefix = IvoryCostPhoneUtil.mobileOperators[operator];
+
+      }
+
+      if(isFixedLine){
+        operatorPrefix = IvoryCostPhoneUtil.fixedLineOperators[operator];
+      }
+
+      if(operatorPrefix != null){
+        String newPhoneNumber = "+225 "+operatorPrefix+" "+phoneNumber;
+        newPhoneNumber  = IvoryCostPhoneUtil.normalizePhoneNumber(newPhoneNumber);
+
+        return newPhoneNumber;
+
+      }
+    }
+
+    return "";
 
   }
 
