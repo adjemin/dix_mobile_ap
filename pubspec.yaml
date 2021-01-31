@@ -1,5 +1,5 @@
 name: dixapp
-description: A new Flutter application.
+description: DIX est une application mobile qui vous permet de basculer de 8 à 10 chiffres son repertoire.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
