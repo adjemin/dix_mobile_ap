@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:adjeminpay_flutter/adjeminpay_flutter.dart';
-import 'package:dixapp/cinetpay/CinetPaymentScreen.dart';
-import 'package:dixapp/cinetpay/PaymentResponse.dart';
 import 'package:dixapp/generic_ui/Dialogs.dart';
+import 'package:dixapp/models/BackupResult.dart';
 import 'package:dixapp/models/ContactResult.dart';
 import 'package:dixapp/models/InvoicePayment.dart';
 import 'package:dixapp/models/Session.dart';
@@ -18,6 +17,7 @@ import 'package:dixapp/util/FlutterContacts.dart';
 import 'package:dixapp/util/IvoryCostPhoneUtil.dart';
 import 'package:dixapp/util/LoginManager.dart';
 import 'package:dixapp/util/NotificationStatus.dart';
+import 'package:dixapp/util/Restore.dart';
 import 'package:dixapp/util/dixcontact.dart';
 import 'package:dixapp/util/properties/phone.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +162,7 @@ class _MainScreenState extends State<MainScreen> {
           children: [
 
             new Container(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(6.0),
               decoration: BoxDecoration(
                   color: Color(0xffD2E5F3)
               ),
@@ -170,20 +170,68 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
 
-                  new Text("Mes Contacts (${_result.contacts.length})", style: TextStyle(color: Color(0xff003F7C), fontSize: 18.0, fontWeight: FontWeight.bold),),
-
+                  new Text("Mes Contacts (${_result.contacts.length})", style: TextStyle(color: Color(0xff003F7C), fontSize: 15.0, fontWeight: FontWeight.bold),),
+                  new Container(
+                    child: new Text("Version ${Constants.VERSION_NAME}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
+                  ),
 
                 ],
               ),
             ),
 
+
+
             _buildNotificationUI (),
+
 
             new SizedBox(height: 5,),
 
             new Container(
-                child: new Text("Version ${Constants.VERSION_NAME}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
+              decoration: BoxDecoration(
+                color: Colors.red[100]
+              ),
+              padding: EdgeInsets.all(5),
+              margin: EdgeInsets.only(left: 10.0, right: 10.0),
+              child: new Text("Nous avons effectué une sauvegarde afin de vous permettre de restaurer  votre repertoire  à tout moment.",
+                style: TextStyle(fontSize: 12.0),),
             ),
+            new SizedBox(height: 5,),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+
+              child: InkWell(
+                onTap: (){
+
+                  Dialogs.confirm(context, "Restauration de Contacts", "Voulez vous confirmer la restauration des contacts dans votre repertoire ?", (){
+
+
+                  },(){
+
+                    restoreContacts();
+
+                  });
+
+
+                },
+                child: Text("Cliquer ici pour restaurer vos contacts", textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red, fontSize: 15.0, decoration: TextDecoration.underline, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            new SizedBox(height: 16,),
+
+            /*new Container(
+              child: ListTile(
+                title: Text("${_allUnConverted.length} CONTACTS NON BASCULÉS"),
+              ),
+            ),
+
+            new Container(
+              child: ListTile(
+                title: Text("${_allConverted.length}  CONTACTS BASCULÉS"),
+              ),
+            ),*/
+
 
         /*    new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -281,26 +329,7 @@ class _MainScreenState extends State<MainScreen> {
                 ]
             ),*/
 
-            new SizedBox(height: 10,),
-            convertedSelected.isNotEmpty?new Container(
-              margin: EdgeInsets.only(bottom: 20.0),
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorDark,
-              ),
-              child: Text("${convertedSelected.length} contacts basculés sélèctionnés",   textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0,color: Colors.white, fontWeight: FontWeight.bold),),
-            ): new Container(),
 
-            unConvertedSelected.isNotEmpty?new Container(
-              margin: EdgeInsets.only(bottom: 20.0),
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorDark,
-              ),
-              child: Text("${unConvertedSelected.length} contacts non basculés sélèctionné",   textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0,color: Colors.white, fontWeight: FontWeight.bold),),
-            ): new Container(),
 
             new Button(
               width: MediaQuery.of(context).size.width,
@@ -385,7 +414,6 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
 
-            new SizedBox(height: 20,),
 
             new Container(
               padding: EdgeInsets.all(8.0),
@@ -395,9 +423,9 @@ class _MainScreenState extends State<MainScreen> {
               child: new TabBar(
 
                 tabs: [
-                  Tab(text: "NON BASCULE (${_allUnConverted.length})",),
+                  Tab(text: "(${_allUnConverted.length}) NON BASCULE ",),
 
-                  Tab( text: "BASCULE (${_allConverted.length})"),
+                  Tab( text: "(${_allConverted.length}) BASCULE "),
 
                 ],
                 labelColor: Theme.of(context).primaryColor,
@@ -618,6 +646,8 @@ class _MainScreenState extends State<MainScreen> {
 
       }
 
+      showProgress();
+
       // Display message: "Traitement en cours..."
       pushNotification(
           message: "Sauvregarde en cours...",
@@ -635,6 +665,7 @@ class _MainScreenState extends State<MainScreen> {
        );
      }
 
+     hideProgress();
 
       setState(() {
         unConvertedSelected = [];
@@ -687,6 +718,8 @@ class _MainScreenState extends State<MainScreen> {
 
       }
 
+      showProgress();
+
       // Display message: "Traitement en cours..."
       pushNotification(
           message: "Sauvregarde en cours...",
@@ -704,6 +737,8 @@ class _MainScreenState extends State<MainScreen> {
             duration: 3
         );
       }
+
+      hideProgress();
 
       setState(() {
         convertedSelected = [];
@@ -815,53 +850,6 @@ class _MainScreenState extends State<MainScreen> {
 
   }
 
-  void goToCinetPayPayment(InvoicePayment data) async {
-
-
-    PaymentResponse paymentResponse = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CinetPaymentScreen(
-          Constants.CINET_PAY_API_KEY,
-          Constants.CINET_PAY_SITE_ID,
-          Constants.CINET_PAY_NOTIFICATION_URL,
-          double.parse(data.amount.toString()),
-          data.payment_reference,
-          data.currency_code,
-          "Abonnement PNN",
-          "",
-        ),
-      ),
-    );
-
-    if (paymentResponse != null) {
-      if (paymentResponse.success) {
-
-        Dialogs.showSuccess(context, "Paiement Réussi!", 'Votre paiement a été effectué', (){
-
-          updateUser((){
-
-            launchConversion(0);
-
-          });
-
-        });
-
-      } else {
-
-        Dialogs.simpleError(context, 'Erreur rencontrée', "Le paiement n'a pas été effectué", (){
-
-        });
-
-      }
-    } else {
-      Dialogs.simpleError(context, 'Erreur rencontrée', "Le paiement n'a pas été effectué", (){
-
-      });
-    }
-
-  }
-
   void updateUser(Function action) {
 
     UserRepository.findUser(
@@ -955,6 +943,243 @@ class _MainScreenState extends State<MainScreen> {
       });
 
     });
+
+  }
+
+  void restoreContacts() async{
+
+
+    print(" >>>> START RestoreContacts >>>>>>> () ");
+
+    showProgress();
+
+
+    Restore.rest();
+
+
+    hideProgress();
+
+    print(" >>>> STOP RestoreContacts >>>>>>> () ");
+
+    Dialogs.showSuccess(context,
+        "Repertoire restauré",
+        "Nous avons ajouté la sauvegarde dans votre repertoire", (){
+
+          hideProgress();
+
+      print("Ok");
+
+      loadData();
+
+    });
+
+
+  }
+
+  void loadData() async {
+
+    showProgress();
+
+    List<DixContact> elements = [];
+
+    int _totalContacts = 0;
+
+    final list = await fetchContacts();
+
+
+    //final data = list.take(50).toList();
+    final data = list.toList();
+
+    elements = data;
+
+    int totalCount = 0;
+    /* int moovCount = 0;
+    int orangeCount = 0;
+    int mtnCount = 0;
+
+    int totalCount = 0;
+    int totalConvertedCount = 0;
+    int totalNoneConvertedCount = 0;
+
+
+
+    pushNotification(
+        message: "Décompte des contacts...",
+        status: NotificationStatus.PENDING,
+        duration: 3
+    );
+    await Future.delayed(Duration(seconds: 3),(){
+
+    });
+
+    for(DixContact contact in elements){
+
+      final List<String> pListConverted = [];
+      final List<String> pNoneConverted = [];
+
+      for(Phone phone in contact.phones){
+
+        String operator = IvoryCostPhoneUtil.operatorByPhoneNumber(phone.number);
+        if(IvoryCostPhoneUtil.isConverted(phone)){
+          pListConverted.add(phone.number);
+          ++totalConvertedCount;
+        }else{
+
+          String phonePNNNormalized = IvoryCostPhoneUtil.getPhoneNumberConversion(phone.number);
+          if(phonePNNNormalized!= null && phonePNNNormalized.isNotEmpty){
+            bool hasContainPhoneConvertedVersion = contact.phones.where((element) => IvoryCostPhoneUtil.normalizePhoneNumber(element.number) == phonePNNNormalized).isNotEmpty;
+            if(!hasContainPhoneConvertedVersion){
+              pNoneConverted.add(phone.number);
+              ++totalNoneConvertedCount;
+            }
+          }
+
+        }
+
+        if(operator != null){
+
+
+          if(operator == "moov"){
+            ++moovCount;
+          }
+
+          if(operator == "mtn"){
+            ++mtnCount;
+          }
+
+          if(operator == "orange"){
+            ++orangeCount;
+          }
+
+        }
+
+      }
+
+      totalCount = totalCount + pListConverted.length + pNoneConverted.length;
+
+      pushNotification(
+          message: "$totalCount contacts retrouvés...",
+          status: NotificationStatus.PENDING,
+          duration: 1
+      );
+      await Future.delayed(Duration(milliseconds: 150),(){
+
+      });
+
+    }*/
+
+
+    totalCount = elements.length;
+
+
+
+    ContactResult result = new ContactResult(
+      contacts: elements,
+      totalContactCount: elements.length ,
+      totalNumberCount: totalCount,
+      /*moovContactCount: moovCount,
+        mtnContactCount: mtnCount,
+        orangeContactCount: orangeCount,
+        totalConvertedNumberCount: totalConvertedCount,
+        totalNoneConvertedNumberCount: totalNoneConvertedCount*/
+    );
+
+
+
+    Future.delayed(Duration(seconds: 1),()async{
+
+      LoginManager.saveContacts(result)
+          .whenComplete((){
+
+        hideProgress();
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> new MainScreen(widget.session,result)));
+
+      });
+
+
+    });
+
+
+  }
+
+  Future<List<DixContact>>  fetchContacts() async {
+
+    pushNotification(
+        message: "Recherche de contacts...",
+        status: NotificationStatus.PENDING,
+        duration: 1
+    );
+
+    await Future.delayed(Duration(seconds: 1),(){
+
+    });
+
+    List<DixContact> contacts = await FlutterContacts.getContacts();
+    contacts.sort((d1,d2)=>d1.displayName.compareTo(d2.displayName));
+
+    DixContact first = contacts.first;
+    DixContact last = contacts.last;
+
+    print('COUNT ${contacts.length}');
+    print('FIRST ${first.displayName}');
+    print('LAST ${last.displayName}');
+    List<DixContact> results = [];
+
+    try{
+      for(DixContact c in contacts){
+
+        DixContact contact = c;//await FlutterContacts.getContact(c.id);
+        if(contact != null){
+
+          contact.deduplicatePhones();
+
+          if(contact.phones == null || contact.phones.isEmpty) continue;
+
+          results.add(contact);
+
+          /*for(Phone p in contact.phones){
+
+
+            bool isValid = IvoryCostPhoneUtil.isValidPhone(p);
+            if(isValid){
+
+              if(!results.contains(contact)){
+
+                ++_totalContacts;
+
+                results.add(contact);
+                pushNotification(
+                    message: "$_totalContacts contacts retrouvés",
+                    status: NotificationStatus.PENDING,
+                    duration: 1
+                );
+
+              }
+            }
+
+          }*/
+
+          //print(">>> contacts count $_totalContacts");
+        }
+
+
+
+        /*  if(_totalContacts > 50){
+          break;
+        }*/
+
+      }
+    }catch(error){
+
+      print("Error found >>> $error");
+
+    }
+
+    print('RESULTS COUNT ${results.length}');
+
+    return results;
+
 
   }
 

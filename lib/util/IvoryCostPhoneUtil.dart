@@ -50,6 +50,7 @@ class IvoryCostPhoneUtil{
 
     String phoneNumber  = phone.number;
 
+    phoneNumber = phoneNumber.replaceAll(' ', '');
     phoneNumber = phoneNumber.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
 
     if(isIvorianNumber(phoneNumber)){

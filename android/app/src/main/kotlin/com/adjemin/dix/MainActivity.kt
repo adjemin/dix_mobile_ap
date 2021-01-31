@@ -44,6 +44,23 @@ class MainActivity: FlutterActivity() {
             }
 
 
+            if(call.method == "saveAllContacts"){
+
+                val args = call.arguments as List<*>
+
+                val elements = args.map { it as Map<String, Any> }
+                val r = DixContactUtils.saveAllContacts(this, elements)
+
+                if(r != null){
+                    result.success(r)
+                }else{
+                    result.error("Error", "Error found",null)
+                }
+
+
+            }
+
+
         }
 
     }

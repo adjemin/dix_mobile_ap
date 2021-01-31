@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dixapp/models/BackupResult.dart';
 import 'package:dixapp/models/ContactResult.dart';
 import 'package:dixapp/models/Session.dart';
 import 'package:dixapp/ui/main/MainScreen.dart';
@@ -419,15 +420,23 @@ class _PermissionScreenState extends State<PermissionScreen> {
     );
 
 
+    showProgress();
     Future.delayed(Duration(seconds: 1),(){
+        hideProgress();
 
+      LoginManager.storeBackup(BackupResult(
+        backup: elements
+      )).whenComplete((){
 
-      LoginManager.saveContacts(result)
-      .whenComplete((){
+        LoginManager.saveContacts(result)
+            .whenComplete((){
 
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> new MainScreen(widget.session,result)));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> new MainScreen(widget.session,result)));
+
+        });
 
       });
+
 
 
     });

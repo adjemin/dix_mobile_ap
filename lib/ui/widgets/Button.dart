@@ -20,7 +20,7 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width != null? width: null,
-      height: height != null? height: 60.0,
+      height: height != null? height: 55.0,
       margin: margin,
       child: new RaisedButton(
         onPressed: onTap,

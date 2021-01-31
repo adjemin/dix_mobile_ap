@@ -348,6 +348,21 @@ class FlutterContacts {
             return contacts.map { it.toMap() }
         }
 
+        fun newAll( resolver: ContentResolver,
+                       contactList:List<Map<String, Any?>>): List<Map<String, Any?>?>{
+
+            val list = arrayListOf<Map<String, Any?>?>()
+
+            contactList.forEach {
+
+                val m =  new(resolver,it)
+                list.add(m)
+            }
+
+            return list
+
+        }
+
         fun new(
                 resolver: ContentResolver,
                 contactMap: Map<String, Any?>

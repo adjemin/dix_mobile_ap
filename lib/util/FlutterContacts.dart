@@ -50,4 +50,25 @@ class FlutterContacts{
 
   }
 
+  static Future saveContacts(List<DixContact> newContacts)async {
+
+    try{
+
+      List result = await dixContactChannel.invokeMethod('saveAllContacts', newContacts.map((e) => e.toJson()).toList());
+
+
+      print('saveAllContacts() >>> $result');
+      //print('updateContacts() >>> LAST NAME >>> ${newContacts.last.displayName}');
+
+
+    }on PlatformException catch(e){
+
+      //elements = [];
+
+      print("Error found $e");
+
+    }
+
+  }
+
 }

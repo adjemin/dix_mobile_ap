@@ -315,7 +315,8 @@ class _ConversionScreenState extends State<ConversionScreen> {
 
           if(contact.phones == null || contact.phones.isEmpty) continue;
 
-          for(Phone p in contact.phones){
+          results.add(contact);
+          /*for(Phone p in contact.phones){
 
 
             bool isValid = IvoryCostPhoneUtil.isValidPhone(p);
@@ -335,7 +336,7 @@ class _ConversionScreenState extends State<ConversionScreen> {
               }
             }
 
-          }
+          }*/
 
           //print(">>> contacts count $_totalContacts");
         }

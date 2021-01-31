@@ -21,6 +21,13 @@ class DixContactUtils {
              return FlutterContacts.updateAll(cr, list);
 
         }
+
+        fun  saveAllContacts(context: Context, list: List<Map<String, Any?>>) : List<Map<String, Any?>?>{
+            val cr: ContentResolver = context.getContentResolver();
+
+            return FlutterContacts.newAll(cr, list);
+
+        }
     }
 
 
